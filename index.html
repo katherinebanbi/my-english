@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>My English</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --text: #1A1A18;
+    --muted: #888780;
+    --border: #E5E3DC;
+    --accent: #2D5A3D;
+    --accent-light: #EAF3DE;
+    --accent-text: #3B6D11;
+    --danger: #A32D2D;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  .app { padding: 0 0 100px; }
+
+  .header {
+    padding: 56px 20px 16px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-title { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; }
+  .header-sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+  .tab-bar {
+    display: flex;
+    gap: 6px;
+    padding: 12px 20px;
+    background: var(--bg);
+    position: sticky;
+    top: 88px;
+    z-index: 10;
+  }
+  .tab {
+    flex: 1;
+    padding: 9px 4px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .section { display: none; padding: 8px 20px; }
+  .section.active { display: block; }
+
+  .stats { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stat {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .stat-num { font-size: 24px; font-weight: 600; }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .review-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .sentence-en {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .sentence-zh {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .card-actions { display: flex; gap: 10px; }
+  .btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-got {
+    background: var(--accent-light);
+    border-color: var(--accent-light);
+    color: var(--accent-text);
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input, .form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { height: 80px; resize: none; }
+
+  .list-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .list-text { flex: 1; min-width: 0; }
+  .list-en { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .list-zh { font-size: 13px; color: var(--muted); }
+  .list-delete {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .list-title { font-size: 16px; font-weight: 600; }
+  .list-count { font-size: 13px; color: var(--muted); }
+
+  .remind-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .remind-card-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .remind-step { font-size: 14px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+  .remind-step strong { color: var(--text); }
+  .remind-time {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin: 3px 4px 3px 0;
+  }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+  .loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .sync-badge {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--accent-text);
+    background: var(--accent-light);
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--text);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-title">My English 📖 <span class="sync-badge" id="sync-badge">connecting...</span></div>
+    <div class="header-sub" id="header-sub">Loading...</div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('review')">✦ Review</div>
+    <div class="tab" onclick="switchTab('add')">＋ Add</div>
+    <div class="tab" onclick="switchTab('list')">≡ All</div>
+    <div class="tab" onclick="switchTab('remind')">◎ Setup</div>
+  </div>
+
+  <div id="review" class="section active">
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="s-total">—</div><div class="stat-label">Total</div></div>
+      <div class="stat"><div class="stat-num" id="s-learned">0</div><div class="stat-label">Learned</div></div>
+      <div class="stat"><div class="stat-num" id="s-left">—</div><div class="stat-label">To go</div></div>
+    </div>
+    <div id="review-content"><div class="loading">Syncing with cloud...</div></div>
+  </div>
+
+  <div id="add" class="section">
+    <div class="form-group">
+      <label class="form-label">English sentence</label>
+      <textarea class="form-textarea" id="input-en" placeholder="e.g. I'll circle back to you on that."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Chinese hint</label>
+      <input class="form-input" type="text" id="input-zh" placeholder="e.g. 我之後再回覆你">
+    </div>
+    <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="addSentence()">Add sentence</button>
+  </div>
+
+  <div id="list" class="section">
+    <div class="list-header">
+      <div class="list-title">All sentences</div>
+      <div class="list-count" id="list-count"></div>
+    </div>
+    <div id="list-content"><div class="loading">Loading...</div></div>
+  </div>
+
+  <div id="remind" class="section">
+    <div class="remind-card">
+      <div class="remind-card-title">☁️ Cloud sync</div>
+      <div class="remind-step">Your sentences are saved to the cloud via Firebase. Any device that opens this app will see the same data.</div>
+    </div>
+    <div class="remind-card">
+      <div class="remind-card-title">🔔 Daily reminders</div>
+      <div class="remind-step">Open <strong>Shortcuts</strong> app → <strong>Automation</strong> → <strong>＋ New Automation</strong></div>
+      <div class="remind-step">Set these three times:</div>
+      <div style="margin: 10px 0;">
+        <span class="remind-time">8:40 AM</span>
+        <span class="remind-time">12:30 PM</span>
+        <span class="remind-time">7:30 PM</span>
+      </div>
+      <div class="remind-step">Action: <strong>Open URL</strong> → paste your GitHub Pages link</div>
+    </div>
+    <div class="remind-card">
+      <div class="remind-card-title">📱 Add to home screen</div>
+      <div class="remind-step">1. Open in <strong>Safari</strong></div>
+      <div class="remind-step">2. Tap <strong>Share ↑</strong> → <strong>Add to Home Screen</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRg_jbiS_LnglKSke3CsOQiu1bpiaEjyM",
+    authDomain: "my-english-36ab6.firebaseapp.com",
+    projectId: "my-english-36ab6",
+    storageBucket: "my-english-36ab6.firebasestorage.app",
+    messagingSenderId: "239574287397",
+    appId: "1:239574287397:web:45d7c88eca3f27baa06bcc",
+    measurementId: "G-EXGNLC1ZKW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let sentences = [];
+  let currentIdx = -1;
+  let sessionLearned = new Set();
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function updateHeader() {
+    const now = new Date();
+    const h = now.getHours();
+    const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('header-sub').textContent = `${greeting} — ${sentences.length} sentence${sentences.length !== 1 ? 's' : ''} saved`;
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', ['review','add','list','remind'][i] === tab);
+    });
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    if (tab === 'review') renderReview();
+    if (tab === 'list') renderList();
+  }
+  window.switchTab = switchTab;
+
+  function renderReview() {
+    const total = sentences.length;
+    const learned = sessionLearned.size;
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-learned').textContent = learned;
+    document.getElementById('s-left').textContent = Math.max(0, total - learned);
+
+    const rc = document.getElementById('review-content');
+    if (total === 0) {
+      rc.innerHTML = '<div class="empty">No sentences yet.<br>Tap Add to get started.</div>';
+      return;
+    }
+
+    const available = sentences.map((_, i) => i).filter(i => !sessionLearned.has(i));
+    if (available.length === 0) {
+      rc.innerHTML = '<div class="empty">All done for this session! 🎉<br><br><button class="btn btn-primary" style="margin:0 auto;display:block;padding:12px 24px;" onclick="restartSession()">Start over</button></div>';
+      return;
+    }
+
+    if (currentIdx === -1 || sessionLearned.has(currentIdx)) {
+      currentIdx = available[Math.floor(Math.random() * available.length)];
+    }
+
+    const s = sentences[currentIdx];
+    rc.innerHTML = `
+      <div class="review-card">
+        <div class="sentence-en">${s.en}</div>
+        <div class="sentence-zh">${s.zh || ''}</div>
+        <div class="card-actions">
+          <button class="btn btn-got" onclick="markLearned()">✓ Got it</button>
+          <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.restartSession = () => { sessionLearned.clear(); currentIdx = -1; renderReview(); };
+  window.nextCard = () => { currentIdx = -1; renderReview(); };
+  window.markLearned = () => {
+    sessionLearned.add(currentIdx);
+    currentIdx = -1;
+    renderReview();
+    showToast('Marked as learned ✓');
+  };
+
+  async function addSentence() {
+    const en = document.getElementById('input-en').value.trim();
+    const zh = document.getElementById('input-zh').value.trim();
+    if (!en) { showToast('Please enter a sentence'); return; }
+    try {
+      await addDoc(collection(db, 'sentences'), { en, zh, createdAt: Date.now() });
+      document.getElementById('input-en').value = '';
+      document.getElementById('input-zh').value = '';
+      showToast('Sentence added ✓');
+    } catch(e) {
+      showToast('Error saving — check connection');
+    }
+  }
+  window.addSentence = addSentence;
+
+  function renderList() {
+    document.getElementById('list-count').textContent = `${sentences.length} total`;
+    const lc = document.getElementById('list-content');
+    if (sentences.length === 0) { lc.innerHTML = '<div class="empty">Nothing yet</div>'; return; }
+    lc.innerHTML = sentences.map((s) => `
+      <div class="list-item">
+        <div class="list-text">
+          <div class="list-en">${s.en}</div>
+          <div class="list-zh">${s.zh || '—'}</div>
+        </div>
+        <button class="list-delete" onclick="deleteSentence('${s.id}')">×</button>
+      </div>
+    `).join('');
+  }
+
+  window.deleteSentence = async (id) => {
+    if (!confirm('Delete this sentence?')) return;
+    try {
+      await deleteDoc(doc(db, 'sentences', id));
+      showToast('Deleted');
+    } catch(e) {
+      showToast('Error deleting');
+    }
+  };
+
+  // Real-time listener
+  const q = query(collection(db, 'sentences'), orderBy('createdAt', 'asc'));
+  onSnapshot(q, (snapshot) => {
+    sentences = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('sync-badge').textContent = 'synced ✓';
+    document.getElementById('sync-badge').style.background = '#EAF3DE';
+    document.getElementById('sync-badge').style.color = '#3B6D11';
+    updateHeader();
+    const activeTab = document.querySelector('.tab.active');
+    const tabIdx = [...document.querySelectorAll('.tab')].indexOf(activeTab);
+    if (tabIdx === 0) renderReview();
+    if (tabIdx === 2) renderList();
+  }, (error) => {
+    document.getElementById('sync-badge').textContent = 'offline';
+    document.getElementById('sync-badge').style.background = '#FCEBEB';
+    document.getElementById('sync-badge').style.color = '#A32D2D';
+  });
+</script>
+</body>
+</html>
